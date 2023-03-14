@@ -40,30 +40,40 @@ public class SimpleStream {
     public static void main(String[] args) {
         // Check properties first.
         Properties cfg = configureProperties();
+        String srcTopic = ConfigProvider.getConfig().getOptionalValue("kafka.topic.payments", String.class).orElse("payments");
+        String dstTopic = ConfigProvider.getConfig().getOptionalValue("kafka.topic.largepayments", String.class).orElse("large-payments");
 
         Serde<String> ks = Serdes.String();
         Serde<Integer> vs = Serdes.Integer();
 
         StreamsBuilder b = new StreamsBuilder();
 
-        KStream<String, Integer> src = b.stream("payments", Consumed.with(ks, vs));
+        // just logs everything received
+        // b.stream(srcTopic, Consumed.with(ks, vs))
+        //         .foreach((key, val) -> System.out.println("Received key: " + key + ", value: " + val));
 
+        // this is the same for the following two examples
+        KStream<String, Integer> src = b.stream(srcTopic, Consumed.with(ks, vs));
+
+        // logs everything and sends records above $foo for further processing using a filter
+        // src.foreach((key, val) -> System.out.println("Received key: " + key + ", value: " + val));
+        // src.filter((key, value) -> value > 2500)
+        //         .to(dstTopic, Produced.with(ks, vs));
+
+        // uses the split processor (2.8.0+) to create substreams per-criteria and attach processors to them
         Map<String, KStream<String, Integer>> splits = src.split(Named.as("stream-"))
-                        .branch((k, v) -> true, Branched.as("orig"))
-                        .branch((k, v) -> true, Branched.as("copy"))
-                        .noDefaultBranch();
+                        .branch((k, v) -> v <= 2500, Branched.as("log"))
+                        .defaultBranch(Branched.as("proc"));
 
         System.out.println("Got the following streams:");
         for (String x : splits.keySet()) {
             System.out.println(" - " + x);
         }
 
-        splits.get("stream-copy")
-                .foreach((key, val) -> System.out.println("Received key: " + key + ", value: " + val));
+        splits.get("stream-log").foreach((key, val) -> System.out.println("Received LOW PAYMENT key: " + key + ", value: " + val));
 
-        splits.get("stream-orig")
-                .filter((key, value) -> value > 1000)
-                .to("large-payments", Produced.with(ks, vs));
+        splits.get("stream-proc").foreach((key, val) -> System.out.println("Received HIGH PAYMENT key: " + key + ", value: " + val));
+        splits.get("stream-proc").to(dstTopic, Produced.with(ks, vs));
 
         Topology t = b.build();
         TopologyDescription td = t.describe();
