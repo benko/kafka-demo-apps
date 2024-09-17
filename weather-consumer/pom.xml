@@ -22,6 +22,11 @@
       <version>3.7.0.redhat-00007</version>
     </dependency>
     <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.7.redhat-00003</version>
+      </dependency>
+      <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>2.0.7.redhat-00003</version>
