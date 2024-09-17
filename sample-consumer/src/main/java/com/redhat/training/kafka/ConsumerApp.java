@@ -31,9 +31,9 @@ public class ConsumerApp
     private static Properties configureProperties() {
         Properties props = new Properties();
 
-        // TODO: Add Kafka configuration properties
+        // configuration properties
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            "localhost:9092");
+            "localhost:9092,localhost:9192");
             //"my-cluster-kafka-bootstrap-gcbtjd-kafka-cluster.apps.eu46a.prod.ole.redhat.com:443");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "famousQuotes");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
