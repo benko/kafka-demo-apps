@@ -1,4 +1,4 @@
-package com.redhat.training.kafka;
+package com.redhat.training.kafka.coreapi;
 
 import java.util.Properties;
 import java.util.Random;
@@ -11,6 +11,9 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.config.SslConfigs;
+
+import com.redhat.training.kafka.model.Weather;
+import com.redhat.training.kafka.model.WeatherType;
 
 public class ProducerApp {
     public static Properties configureProperties() {
@@ -27,7 +30,7 @@ public class ProducerApp {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                     org.apache.kafka.common.serialization.VoidSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                    com.redhat.training.kafka.WeatherSerializer.class.getName());
+                    com.redhat.training.kafka.model.WeatherSerializer.class.getName());
 
         // configure the SSL connection (if necessary)
         // props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");

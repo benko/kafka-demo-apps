@@ -1,4 +1,4 @@
-package com.redhat.training.kafka;
+package com.redhat.training.kafka.model;
 
 import java.io.Serializable;
 

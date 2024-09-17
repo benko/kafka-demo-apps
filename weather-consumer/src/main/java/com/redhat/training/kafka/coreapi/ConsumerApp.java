@@ -1,10 +1,13 @@
-package com.redhat.training.kafka;
+package com.redhat.training.kafka.coreapi;
 
 import java.time.Duration;
 import java.util.Properties;
 import java.util.Collections;
 
 import org.apache.kafka.common.config.SslConfigs;
+
+import com.redhat.training.kafka.model.Weather;
+
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -41,7 +44,7 @@ public class ConsumerApp
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                      org.apache.kafka.common.serialization.VoidDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                        com.redhat.training.kafka.WeatherDeserializer.class.getName());
+                        com.redhat.training.kafka.model.WeatherDeserializer.class.getName());
         // props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         // props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 500);
 
