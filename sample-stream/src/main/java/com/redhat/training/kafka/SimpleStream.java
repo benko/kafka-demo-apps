@@ -94,7 +94,10 @@ public class SimpleStream {
                 cd.countDown();
             }
         });
+
+        // start the application
         try {
+            System.out.println("Starting payment stream processor...");
             str.start();
             cd.await();
         } catch (InterruptedException ie) {

@@ -24,10 +24,11 @@ public class RandomPaymentProducer {
         props.put(ProducerConfig.ACKS_CONFIG, "1");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerSerializer");
-        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
-        props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, cf.getValue("ssl.truststore", String.class));
-        props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, cf.getValue("ssl.password", String.class));
-
+        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, cf.getOptionalValue("kafka.protocol", String.class).orElse("PLAINTEXT"));
+        if (props.get(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG).equals("SSL")) {
+            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, cf.getValue("ssl.truststore", String.class));
+            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, cf.getValue("ssl.password", String.class));
+        }
         return props;
     }
 
@@ -37,6 +38,7 @@ public class RandomPaymentProducer {
 
         String topic = ConfigProvider.getConfig().getOptionalValue("kafka.topic.payments", String.class).orElse("payments");
 
+        System.out.println("Sending random payment data to \"" + topic + "\"...");
         while (true) {
 	        int sum = random.nextInt(5000);
             ProducerRecord<String, Integer> record = new ProducerRecord<>(
@@ -44,16 +46,13 @@ public class RandomPaymentProducer {
                     sum
                 );
 
-            producer.send(record, new Callback() {
-                public void onCompletion(RecordMetadata rm, Exception e) {
-                        // if there was a problem, "e" will contain the exception that happened
+            producer.send(record, (rm, e) -> {
                         if (e != null) {
                                 System.out.println(e.getStackTrace());
                         } else {
 				            System.out.println("Sent new payment: " + record.value());
                         }
-                }
-            });
+                    });
 
             try {
                 Thread.sleep(1000);

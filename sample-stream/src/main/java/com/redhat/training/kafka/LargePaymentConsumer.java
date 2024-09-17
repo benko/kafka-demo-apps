@@ -24,10 +24,11 @@ public class LargePaymentConsumer {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "largePaymentConsumer");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
-        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
-        props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, cf.getValue("ssl.truststore", String.class));
-        props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, cf.getValue("ssl.password", String.class));
-
+        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, cf.getOptionalValue("kafka.protocol", String.class).orElse("PLAINTEXT"));
+        if (props.get(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG).equals("SSL")) {
+            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, cf.getValue("ssl.truststore", String.class));
+            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, cf.getValue("ssl.password", String.class));
+        }
         return props;
     }
 
@@ -37,10 +38,11 @@ public class LargePaymentConsumer {
         String topic = ConfigProvider.getConfig().getOptionalValue("kafka.topic.largepayments", String.class).orElse("large-payments");
         consumer.subscribe(Collections.singleton(topic));
 
+        System.out.println("Consuming large payment data from \"" + topic + "\"...");
         while (true) {
             ConsumerRecords<String, Integer> crs = consumer.poll(Duration.ofMillis(1000));
             for (ConsumerRecord<String, Integer> cr : crs) {
-                System.out.println("Got large payment: " + cr.value());
+                System.out.println("Got large payment: " + cr.key() + " -> " + cr.value());
             }
         }
     }
