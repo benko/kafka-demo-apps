@@ -37,4 +37,23 @@
       <version>2.17.2.redhat-00001</version>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.4.1</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <mainClass>com.redhat.training.kafka.coreapi.ProducerApp</mainClass>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 </project>
