@@ -1,0 +1,14 @@
+{
+    "type": "record",
+    "name": "Weather",
+    "fields": [
+        {
+            "name": "weather",
+            "type": {
+                "type": "enum",
+                "name": "WeatherType",
+                "symbols": ["SUNNY", "CLOUDY", "RAINY", "MIXED", "WEIRD"]
+            }
+        }
+    ]
+}
