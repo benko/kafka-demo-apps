@@ -30,9 +30,11 @@ public class SimpleStream {
 
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "simpleStreamProcessor");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, cf.getValue("kafka.server", String.class));
-        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
-        props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, cf.getValue("ssl.truststore", String.class));
-        props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, cf.getValue("ssl.password", String.class));
+        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, cf.getOptionalValue("kafka.protocol", String.class).orElse("PLAINTEXT"));
+        if (props.get(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG).equals("SSL")) {
+            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, cf.getValue("ssl.truststore", String.class));
+            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, cf.getValue("ssl.password", String.class));
+        }
 
         return props;
     }
@@ -48,19 +50,17 @@ public class SimpleStream {
 
         StreamsBuilder b = new StreamsBuilder();
 
-        // just logs everything received
-        // b.stream(srcTopic, Consumed.with(ks, vs))
-        //         .foreach((key, val) -> System.out.println("Received key: " + key + ", value: " + val));
-
-        // this is the same for the following two examples
+        // returns a kstream that you can append processors to
         KStream<String, Integer> src = b.stream(srcTopic, Consumed.with(ks, vs));
 
         // logs everything and sends records above $foo for further processing using a filter
-        // src.foreach((key, val) -> System.out.println("Received key: " + key + ", value: " + val));
+        src.foreach((key, val) -> System.out.println("Received key: " + key + ", value: " + val));
+
+        // either filter for interesting things and drop everything else...
         // src.filter((key, value) -> value > 2500)
         //         .to(dstTopic, Produced.with(ks, vs));
 
-        // uses the split processor (2.8.0+) to create substreams per-criteria and attach processors to them
+        // or use the split processor (2.8.0+) to create substreams per-criteria and attach processors to them
         Map<String, KStream<String, Integer>> splits = src.split(Named.as("stream-"))
                         .branch((k, v) -> v <= 2500, Branched.as("log"))
                         .defaultBranch(Branched.as("proc"));
@@ -75,11 +75,17 @@ public class SimpleStream {
         splits.get("stream-proc").foreach((key, val) -> System.out.println("Received HIGH PAYMENT key: " + key + ", value: " + val));
         splits.get("stream-proc").to(dstTopic, Produced.with(ks, vs));
 
+        // this builds the topology for streams
         Topology t = b.build();
+
+        // print the topology on stdout
         TopologyDescription td = t.describe();
         System.out.println("**** TOPOLOGY ****\n" + td.toString());
 
+        // manually create a streams object
         KafkaStreams str = new KafkaStreams(t, cfg);
+
+        // shutdown handler
         final CountDownLatch cd = new CountDownLatch(1);
         Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown") {
             @Override
@@ -88,7 +94,6 @@ public class SimpleStream {
                 cd.countDown();
             }
         });
-
         try {
             str.start();
             cd.await();

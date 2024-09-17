@@ -5,42 +5,112 @@
 
   <groupId>com.redhat.training.kafka</groupId>
   <artifactId>sample-stream</artifactId>
-  <version>1.0</version>
-  <name>producer</name>
+  <version>1.0.1</version>
+  <name>streams</name>
   <packaging>jar</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-clients</artifactId>
-      <version>2.8.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-streams</artifactId>
-      <version>2.8.0</version>
+      <version>3.7.0.redhat-00007</version>
     </dependency>
     <dependency>
         <groupId>io.smallrye.config</groupId>
         <artifactId>smallrye-config</artifactId>
-        <version>2.13.3</version>
+        <version>3.5.4.redhat-00001</version>
     </dependency>
     <!-- smallrye-config declares everything but this as transitive -->
-    <dependency>
+    <!-- <dependency>
         <groupId>javax.annotation</groupId>
         <artifactId>javax.annotation-api</artifactId>
         <version>1.3.2</version>
-    </dependency>
+    </dependency> -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.7.30</version>
-    </dependency>
-  </dependencies>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>2.0.7.redhat-00003</version>
+      </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>com.redhat.training.kafka.SimpleStream</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>producer</id>
+            <activation>
+                <property>
+                    <name>producer</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.4.1</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <mainClass>com.redhat.training.kafka.RandomPaymentProducer</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>consumer</id>
+            <activation>
+                <property>
+                    <name>consumer</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.4.1</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <mainClass>com.redhat.training.kafka.LargePaymentConsumer</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
