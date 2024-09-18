@@ -35,5 +35,8 @@ public class BankAccount {
     public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
-    
+    public String toString() {
+        return String.format("{\"accountId\": \"%s\", \"customerId\": \"%s\", \"customerName\": \"%s\", \"balance\": %d}",
+                                this.accountNumber, this.customerId, this.customerName, this.balance);
+    }
 }
