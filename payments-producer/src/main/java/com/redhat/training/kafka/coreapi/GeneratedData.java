@@ -54,6 +54,13 @@ public class GeneratedData {
         return accounts[rand.nextInt(accounts.length)];
     }
 
+    public static String getCustomerId(int id) {
+        if (id >= usernames.length) {
+            return null;
+        }
+        return usernames[id];
+    }
+
     public static BankAccount getBankAccount(int id) {
         if (id >= accounts.length) {
             return null;

@@ -22,6 +22,30 @@ public class RiskAssessmentProducer {
 
         Producer<String,RiskAssessment> rap = new KafkaProducer<>(ProducerSettings.configureRiskProperties());
 
+        // reset everyone's risk score to zero at start
+        LOG.info("Resetting risk status for all customers to 0...");
+        int cid = 0;
+        while (true) {
+            String customerId = GeneratedData.getCustomerId(cid);
+            cid++;
+
+            if (customerId == null) {
+                break;
+            }
+            RiskAssessment ra = new RiskAssessment();
+            ra.setCustomerId(customerId);
+            ra.setAssessmentScore(0);
+            LOG.info(" - " + customerId);
+            try {
+                ProducerRecord<String,RiskAssessment> rapr =
+                        new ProducerRecord<String,RiskAssessment>(topic, ra.getCustomerId(), ra);
+                rap.send(rapr).get();
+            } catch (ExecutionException | InterruptedException e) {
+                LOG.warning(e.getMessage());
+                continue;
+            }
+        }
+
         while (true) {
             RiskAssessment ra = new RiskAssessment();
 
