@@ -51,7 +51,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.redhat.training.kafka.SimpleStream</mainClass>
+                    <mainClass>com.redhat.training.kafka.coreapi.streams.SimpleStream</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -78,7 +78,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <mainClass>com.redhat.training.kafka.RandomPaymentProducer</mainClass>
+                            <mainClass>com.redhat.training.kafka.coreapi.RandomPaymentProducer</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -105,7 +105,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <mainClass>com.redhat.training.kafka.LargePaymentConsumer</mainClass>
+                            <mainClass>com.redhat.training.kafka.coreapi.LargePaymentConsumer</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>

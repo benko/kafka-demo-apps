@@ -1,4 +1,4 @@
-package com.redhat.training.kafka;
+package com.redhat.training.kafka.coreapi;
 
 import java.time.Duration;
 import java.util.Collections;

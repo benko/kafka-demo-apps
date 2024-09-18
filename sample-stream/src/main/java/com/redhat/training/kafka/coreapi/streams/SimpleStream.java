@@ -1,4 +1,4 @@
-package com.redhat.training.kafka;
+package com.redhat.training.kafka.coreapi.streams;
 
 import java.util.Map;
 import java.util.Properties;
