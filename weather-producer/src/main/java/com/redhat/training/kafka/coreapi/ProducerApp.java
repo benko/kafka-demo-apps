@@ -30,7 +30,7 @@ public class ProducerApp {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                     org.apache.kafka.common.serialization.VoidSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                    com.redhat.training.kafka.model.WeatherSerializer.class.getName());
+                    com.redhat.training.kafka.serdes.WeatherSerializer.class.getName());
 
         // configure the SSL connection (if necessary)
         // props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");

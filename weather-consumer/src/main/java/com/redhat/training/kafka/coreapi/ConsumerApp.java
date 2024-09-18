@@ -44,7 +44,7 @@ public class ConsumerApp
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                      org.apache.kafka.common.serialization.VoidDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                        com.redhat.training.kafka.model.WeatherDeserializer.class.getName());
+                        com.redhat.training.kafka.serdes.WeatherDeserializer.class.getName());
         // props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         // props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 500);
 

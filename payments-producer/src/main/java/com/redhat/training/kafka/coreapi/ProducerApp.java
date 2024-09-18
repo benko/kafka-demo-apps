@@ -53,7 +53,7 @@ public class ProducerApp {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 org.apache.kafka.common.serialization.StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                com.redhat.training.kafka.serde.BankAccountSerializer.class.getName());
+                com.redhat.training.kafka.serdes.BankAccountSerializer.class.getName());
         return props;
     }
     public static Properties configureRiskProperties() {
@@ -61,7 +61,7 @@ public class ProducerApp {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 org.apache.kafka.common.serialization.StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                com.redhat.training.kafka.serde.RiskAssessmentSerializer.class.getName());
+                com.redhat.training.kafka.serdes.RiskAssessmentSerializer.class.getName());
         return props;
     }
     public static Properties configurePaymentProperties() {
@@ -76,6 +76,7 @@ public class ProducerApp {
     public static void main(String[] args) throws Exception {
         Random random = new Random();
 
+        // 
         if (System.getProperty("initialize.accounts") != null &&
                 System.getProperty("initialize.accounts").equals("true")) {
             LOG.info("Initializing account data...");

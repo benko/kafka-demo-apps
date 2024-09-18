@@ -1,15 +1,15 @@
-package com.redhat.training.kafka.serde;
+package com.redhat.training.kafka.serdes;
 
 import org.apache.kafka.common.serialization.Serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redhat.training.kafka.model.RiskAssessment;
+import com.redhat.training.kafka.model.BankAccount;
 
-public class RiskAssessmentSerializer implements Serializer<RiskAssessment> {
+public class BankAccountSerializer implements Serializer<BankAccount> {
     private ObjectMapper om = new ObjectMapper();
     @Override
-    public byte[] serialize(String arg0, RiskAssessment arg1) {
+    public byte[] serialize(String arg0, BankAccount arg1) {
         try {
             return om.writeValueAsBytes(arg1);
         } catch (JsonProcessingException jpe) {

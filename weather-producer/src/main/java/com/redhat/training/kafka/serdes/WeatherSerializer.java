@@ -1,9 +1,10 @@
-package com.redhat.training.kafka.model;
+package com.redhat.training.kafka.serdes;
 
 import org.apache.kafka.common.serialization.Serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.redhat.training.kafka.model.Weather;
 
 public class WeatherSerializer implements Serializer<Weather> {
     private ObjectMapper om = new ObjectMapper();

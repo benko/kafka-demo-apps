@@ -1,4 +1,6 @@
-package com.redhat.training.kafka.model;
+package com.redhat.training.kafka.serdes;
+
+import com.redhat.training.kafka.model.Weather;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 
